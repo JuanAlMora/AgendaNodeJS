@@ -1,9 +1,16 @@
 
 const express = require('express');
+const exphbs  = require('express-handlebars'); 
 const app = express();
 const port = 3000;
+
+
+
 const path = require('path');
 const mysql = require('mysql');
+
+app.engine('.hbs', exphbs.engine());
+app.set('view engine','.hbs');
 
 
 
@@ -65,8 +72,14 @@ app.post('/login', (req, res) => {
 
 //CONTACTOS
 app.get('/contactos', (req, res) => {
-    const filepath = path.join(__dirname, './contactos.html');
-    res.sendFile(filepath);
+    const sql = 'SELECT * FROM contactos'; // Ajusta el nombre de la tabla y la columna según tu esquema
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error al obtener los contactos:', err);
+            return res.status(500).send('Error interno del servidor');
+        }
+        res.render('contactos.hbs', { contactos: result }); // Renderiza la página de inicio con los contactos recuperados
+    });
 });
 
 //REGISTRO
