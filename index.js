@@ -9,9 +9,12 @@ const port = 3000;
 const path = require('path');
 const mysql = require('mysql');
 
-app.engine('.hbs', exphbs.engine());
+app.engine('.hbs', exphbs.engine({
+    defaultLayout: 'main',
+    layoutDir: path.join(app.get('views'),'layouts'),
+    extname: '.hbs',
+}));
 app.set('view engine','.hbs');
-
 
 
 //conexion a la base de datos
@@ -78,7 +81,8 @@ app.get('/contactos', (req, res) => {
             console.error('Error al obtener los contactos:', err);
             return res.status(500).send('Error interno del servidor');
         }
-        res.render('contactos.hbs', { contactos: result }); // Renderiza la página de inicio con los contactos recuperados
+        console.log('Contactos obtenidos:', result);
+        res.render('contactos', { contactos: result }); // Renderiza la página de inicio con los contactos recuperados
     });
 });
 
