@@ -41,29 +41,9 @@ app.get('/login', (req, res) => {
     const filepath = path.join(__dirname, './login.html');
     res.sendFile(filepath);
 });
+
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    // Consultar la base de datos para encontrar un usuario con las credenciales proporcionadas
-    const sql = 'SELECT * FROM usuarios WHERE nombre_usuario = ? AND contrasena = ?';
-    db.query(sql, [username, password], (err, results) => {
-        if (err) {
-            console.error('Error al consultar la base de datos:', err);
-            return res.status(500).send('Error interno del servidor');
-        }
-
-        // Verificar si se encontró un usuario con las credenciales proporcionadas
-        if (results.length > 0) {
-            // Credenciales válidas, redirigir a la página de contactos
-            res.redirect('/contactos');
-        }
-    });
-});
-
-
-//CONTACTOS
-app.get('/contactos', (req, res) => {
-    const { username, password } = req.body;
-
     // Consultar la base de datos para encontrar un usuario con las credenciales proporcionadas
     const sql = 'SELECT * FROM usuarios WHERE nombre_usuario = ? AND contrasena = ?';
     db.query(sql, [username, password], (err, results) => {
@@ -83,6 +63,11 @@ app.get('/contactos', (req, res) => {
     });
 });
 
+//CONTACTOS
+app.get('/contactos', (req, res) => {
+    const filepath = path.join(__dirname, './contactos.html');
+    res.sendFile(filepath);
+});
 
 //REGISTRO
 app.get('/registro', (req, res) => {
@@ -110,6 +95,8 @@ app.post('/registro', (req, res) => {
         res.send('Registro exitoso');
     });
 });
+
+
 // Manejo de errores de ruta no encontrada
 app.use((req, res, next) => {
     res.status(404).send('Página no encontrada');
@@ -120,6 +107,7 @@ app.use((err, req, res, next) => {
     console.error('Error general:', err);
     res.status(500).send('Error interno del servidor');
 });
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
